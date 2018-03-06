@@ -5,7 +5,7 @@ import Map from './map';
 import { popup } from './popup-template';
 
 const view = {
-    message: 'Hello world!!!!123',
+    message: 'Hello world!!!',
 };
 
 /**
@@ -14,7 +14,7 @@ const view = {
  */
 export function startApp(domNode) {
     new Map();
-
+    console.log('-->cho');
     if (!domNode) {
         throw Error('start app need dom node');
     }
