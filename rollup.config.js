@@ -5,12 +5,17 @@ import postcss from "rollup-plugin-postcss";
 import url from "rollup-plugin-url";
 import pcssUrl from "postcss-url";
 import browsersync from 'rollup-plugin-browsersync';
+import path from "path";
+
+function resolvePath(dir) {
+  return path.join(__dirname, dir);
+}
 
 export default {
-  input: "src/app.js",
+  input: resolvePath("./src/app.js"),
   output: [
     {
-      file: "dist/rambler-map.js",
+      file: resolvePath("./dist/rambler-map.js"),
       format: "umd",
       name: "evergis"
     }
@@ -34,6 +39,6 @@ export default {
     babel({
       exclude: "node_modules/**"
     }),
-    browsersync({server: './'})
+    browsersync({server: resolvePath('./')})
   ],
 }
