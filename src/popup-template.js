@@ -1,18 +1,26 @@
-import styles from "./styles.css";
+import styles from './styles.css';
 
 export const popupTemplate = `
-    <div class=${styles.header}>
-        <div>Ярмарка</div>
-        <div>Сельскохозяйственная продукция, овощи, фрукты, ягоды, орехи, зелень</div>
+    <div class=${styles.btnGroup}>
+        <div class=${styles.minimizeBtn}>&#822;</div>
+        <div class=${styles.closeBtn}>&#10005;</div>
     </div>
-    <div class="body">
-        <div class="item">
-            <div class="circle"/>
-            <div>Россия, Иркутская областазование, посёлок Мегет, Садовая улица</div>
+    <div class=${styles.header}>
+        <div class=${styles.headerTitle}>{{name}}</div>
+        <div class=${styles.headerSubtitle}>{{assortmentOfgoods}}</div>
+    </div>
+    <div>
+        <div class=${styles.row}>
+            <div class=${styles.address}>
+                <div class=${styles.silverCircle}></div>
+                {{address}}
+            </div>
         </div>
-        <div class="item">
-            <div class="icon"/>
-            <div>с 01.01.2018 по 31.12.2018</div>
+        <div class=${styles.row}>
+            <div class=${styles.periodicity}>
+                <div class=${styles.timeIcon}></div>
+                    {{periodicity}}
+                </div>
         </div>
     </div>
 `;

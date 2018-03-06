@@ -2,7 +2,6 @@ import '@babel/polyfill';
 import 'es6-promise';
 import mustache from 'mustache';
 import Map from './map';
-import { popup } from './popup-template';
 import { mapContainer } from './map-template';
 
 

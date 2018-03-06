@@ -17,19 +17,111 @@ body, html {
 
 :global(.sGis-balloon) {
     border: none;
-    border-radius: 0;
+}
+
+:global(.sGis-balloon:before) {
+    display: none;
 }
 
 :global(.sGis-balloon) > div {
     border: none;
-    border-radius: 0;
+    border-radius: 2px;
+    box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.11);
     padding: 0;
 }
 
 .popup {
     width: 400px;
+    height: 200px;
+    overflow: auto;
+}
+
+.btnGroup {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    width: 44px;
+    height: 24px;
+    top: 0;
+    right: 15px;
+    position: absolute;
+}
+
+.minimizeBtn {
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    flex-basis: 50%;
+    cursor: pointer;
+    font-weight: bold;
+    color: #9b9b9b;
+}
+
+.closeBtn {
+    font-size: 12px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    flex-basis: 50%;
+    cursor: pointer;
+    font-weight: bold;
+    color: #9b9b9b;
 }
 
 .header {
-    color: red;
+    padding: 20px 30px;
+    border-bottom: 1px solid #ededed;
+}
+
+.headerTitle {
+    padding-right: 30px;
+    font-size: 20px;
+    margin-bottom: 15px;
+}
+
+.headerSubtitle {
+    font-size: 14px;
+}
+
+.row {
+    display: flex;
+    padding: 15px 20px;
+    margin: 0 20px;
+    border-bottom: 1px solid #ededed;
+}
+
+.row:last-child {
+    padding: 15px 20px 35px 20px;
+    border-bottom: none;
+}
+
+.silverCircle {
+    top: 5px;
+    left: -20px;
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background-color: #b9b9b9;
+    border-radius: 50%;
+}
+
+.timeIcon {
+    top: 4px;
+    left: -18px;
+    position: absolute;
+    width: 9px;
+    height: 9px;
+    background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI5IiBoZWlnaHQ9IjkiIHZpZXdCb3g9IjAgMCA5IDkiPiAgICA8ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPiAgICAgICAgPGNpcmNsZSBjeD0iNC41IiBjeT0iNC41IiByPSI0LjUiIGZpbGw9IiM4RUQwNDAiLz4gICAgICAgIDxwYXRoIGZpbGw9IiNGRkYiIGQ9Ik00IDFoMXY0SDR6Ii8+ICAgICAgICA8cGF0aCBmaWxsPSIjRkZGIiBkPSJNNCA0aDN2MUg0eiIvPiAgICA8L2c+PC9zdmc+);
+}
+
+.address {
+    position: relative;
+    color: #1a73a0;
+}
+
+.periodicity {
+    position: relative;
 }
