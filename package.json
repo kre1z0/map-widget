@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "@babel/polyfill": "^7.0.0-beta.40",
-    "mustache": "^2.3.0"
+    "mustache": "^2.3.0",
+    "whatwg-fetch": "^2.0.3"
   }
 }

@@ -1,8 +1,11 @@
-import "@babel/polyfill";
-import mustache from "mustache";
-import { popup } from "./popup-template";
+import '@babel/polyfill';
+import 'whatwg-fetch';
+import mustache from 'mustache';
+import Map from './map';
+import { popup } from './popup-template';
+
 const view = {
-  message: "Hello world!!!"
+    message: 'Hello world!!!!123',
 };
 
 /**
@@ -10,9 +13,11 @@ const view = {
  * @param {dom-node} domNode
  */
 export function startApp(domNode) {
-  if (!domNode) {
-    throw Error('start app need dom node')
-  }
+    new Map();
 
-  domNode.innerHTML = mustache.render(popup, view)
+    if (!domNode) {
+        throw Error('start app need dom node');
+    }
+
+    domNode.innerHTML = mustache.render(popup, view);
 }
