@@ -1,8 +1,9 @@
 import '@babel/polyfill';
-import 'whatwg-fetch';
+import 'es6-promise';
 import mustache from 'mustache';
 import Map from './map';
 import { popup } from './popup-template';
+import { mapContainer } from './map-template';
 
 const view = {
     message: 'Hello world!!!',
@@ -14,10 +15,10 @@ const view = {
  */
 export function startApp(domNode) {
     new Map();
-    console.log('-->cho');
     if (!domNode) {
         throw Error('start app need dom node');
     }
 
     domNode.innerHTML = mustache.render(popup, view);
+    domNode.innerHTML = mustache.render(mapContainer);
 }
