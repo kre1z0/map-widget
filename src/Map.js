@@ -60,6 +60,10 @@ class Map {
         this.selectedObject = { id: props.id, symbolNode: symbol };
     }
 
+    onZoom(value) {
+        this.map.zoom(value);
+    }
+
     initZoomPlugin() {
         const map = document.getElementById(this.mapWrapperId);
         const wrapper = document.createElement('div');
@@ -68,6 +72,10 @@ class Map {
             wrapper.classList.add(styles.zoomPanel);
             wrapper.innerHTML = zoomPanel;
             map.appendChild(wrapper);
+            const zoomIn = document.querySelector(`.${styles.zoomIn}`);
+            const zoomOut = document.querySelector(`.${styles.zoomOut}`);
+            zoomIn.addEventListener('click', () => this.onZoom(1));
+            zoomOut.addEventListener('click', () => this.onZoom(-1));
         }
     }
 
@@ -80,17 +88,19 @@ class Map {
                 resolution: 2445.984905125002,
             });
 
+            this.map = map;
+
             document.addEventListener('click', this.onMapClick);
 
             let featureLayer = new FeatureLayer();
 
-            const w = 40;
-            const h = 55;
+            const iconWidth = 40;
+            const iconHeight = 55;
             const symbol = new DynamicImageSymbol({
                 source: yarmarkaIcon,
-                height: h,
-                width: w,
-                anchorPoint: [w / 2, h / 2],
+                width: iconWidth,
+                height: iconHeight,
+                anchorPoint: [iconWidth / 2, iconHeight / 2],
             });
 
             data.features.features.forEach(({ geometry, id, properties }) => {

@@ -48,6 +48,20 @@ body, html {
     }
 }
 
+@media (max-width: 505px) {
+    .popup {
+        width: 280px;
+        top: 10px;
+        left: 10px;
+    }
+}
+
+@media (max-width: 350px) {
+    .popup {
+        width: 250px;
+    }
+}
+
 .btnGroup {
     margin-top: 10px;
     display: flex;
