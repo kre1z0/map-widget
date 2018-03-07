@@ -12,7 +12,7 @@ import yarmarkaIconSelected from './icons/Yarmarka_selected.svg';
 import { popupTemplate } from './templates/popup-template';
 import { zoomPanelTemplate } from './templates/zoom-plugin-template';
 import styles from './styles.css';
-import {RamblerSymbol} from "./RamblerSymbol";
+import { RamblerSymbol } from './RamblerSymbol';
 
 const apiUrl = 'https://msp.everpoint.ru/';
 
