@@ -1,18 +1,19 @@
 import fetchJsonp from 'fetch-jsonp';
 import mustache from 'mustache';
-import { init } from 'sGis/dist/init.js';
-import { TileLayer } from 'sGis/dist/layers/TileLayer.js';
-import { FeatureLayer } from 'sGis/dist/layers/FeatureLayer.js';
-import { PointFeature } from 'sGis/dist/features/PointFeature.js';
-import { Point } from 'sGis/dist/Point.js';
-import { wgs84 } from 'sGis/dist/Crs.js';
+import { init } from 'sGis/dist/init';
+import { TileLayer } from 'sGis/dist/layers/TileLayer';
+import { FeatureLayer } from 'sGis/dist/layers/FeatureLayer';
+import { PointFeature } from 'sGis/dist/features/PointFeature';
+import { Point } from 'sGis/dist/Point';
+import { wgs84 } from 'sGis/dist/Crs';
 
 import yarmarkaIcon from './icons/Yarmarka.svg';
 import yarmarkaIconSelected from './icons/Yarmarka_selected.svg';
 import { popupTemplate } from './templates/popup-template';
 import { zoomPanelTemplate } from './templates/zoom-plugin-template';
-import styles from './styles.css';
+import { errorTemplate } from './templates/error-template';
 import { RamblerSymbol } from './RamblerSymbol';
+import styles from './styles.css';
 
 const apiUrl = 'https://msp.everpoint.ru/';
 
@@ -29,7 +30,15 @@ class Map {
         })
             .then(res => res.json())
             .then(json => json)
-            .catch(ex => console.log('Error', ex));
+            .catch(ex => {
+                const wrapper = document.createElement('div');
+                const map = document.getElementById(this.mapWrapperId);
+                const error = mustache.render(errorTemplate, { errorText: ex });
+                wrapper.innerHTML = `${error}`;
+                if (map) {
+                    map.appendChild(wrapper);
+                }
+            });
     }
 
     onMapClick(e) {
@@ -37,30 +46,14 @@ class Map {
         if (typeof targetClassName === 'string' || targetClassName instanceof String) {
             const closeBtnClicked = targetClassName.includes(styles.closeBtn);
             if (closeBtnClicked) {
-                const popup = document.querySelector(`.${styles.popup}`);
-                popup.remove();
                 this.clearSelection();
+                const popup = document.querySelector(`.${styles.popup}`);
+                popup.classList.add(styles.fadeOut);
+                setTimeout(() => {
+                    popup.remove();
+                }, 200);
             }
         }
-    }
-
-    onFeatureClick(props, feature) {
-        const { id } = this.selectedObject;
-        const map = document.getElementById(this.mapWrapperId);
-
-        if (map && id !== props.id) {
-            this.clearSelection();
-            const prevPopup = document.querySelector(`.${styles.popup}`);
-            if (prevPopup) prevPopup.remove();
-
-            const popup = mustache.render(popupTemplate, props);
-            const wrapper = document.createElement('div');
-            wrapper.innerHTML = popup;
-            wrapper.classList.add(styles.popup);
-            map.appendChild(wrapper);
-            this.setSelection(feature);
-        }
-        this.selectedObject = { id: props.id };
     }
 
     clearSelection() {
@@ -76,6 +69,38 @@ class Map {
         this.selectedFeature.__dynamicSymbolRender = null;
         feature.setTempSymbol(this._selectedSymbol);
         this._layer.redraw();
+    }
+
+    onFeatureClick(props, feature) {
+        const { id } = this.selectedObject;
+        const map = document.getElementById(this.mapWrapperId);
+
+        if (map && id !== props.id) {
+            this.clearSelection();
+            const prevPopup = document.querySelector(`.${styles.popup}`);
+            if (prevPopup) prevPopup.remove();
+
+            const popup = mustache.render(popupTemplate, props);
+            const wrapper = document.createElement('div');
+
+            wrapper.innerHTML = popup;
+            wrapper.classList.add(styles.popup);
+
+            map.appendChild(wrapper);
+
+            if (prevPopup) {
+                const popupContent = document.querySelector(`.${styles.popupContent}`);
+
+                popupContent.classList.add(styles.fadeIn);
+            } else {
+                wrapper.classList.add(styles.fadeIn);
+            }
+            this.setSelection(feature);
+        }
+
+        this.selectedObject = {
+            id: props.id,
+        };
     }
 
     onZoom(value) {
@@ -135,6 +160,7 @@ class Map {
             });
 
             map.addLayer(featureLayer);
+
             this._layer = featureLayer;
             this.initZoomPlugin();
         });

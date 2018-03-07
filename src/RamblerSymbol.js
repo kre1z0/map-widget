@@ -1,22 +1,29 @@
-import {StaticVectorImageRender} from "sGis/dist/renders/StaticVectorImageRender.js";
-import {Symbol} from "sGis/dist/symbols/Symbol.js";
-import {DynamicImageSymbol} from "sGis/dist/symbols/point/DynamicImageSymbol.js";
+import { StaticVectorImageRender } from 'sGis/dist/renders/StaticVectorImageRender';
+import { Symbol } from 'sGis/dist/symbols/Symbol';
+import { DynamicImageSymbol } from 'sGis/dist/symbols/point/DynamicImageSymbol';
 
 const staticResolution = 611.4962262812505;
 
 const iconWidth = 40;
-const iconHeight = 55;
+const iconHeight = 51;
 
 export class StaticPin extends StaticVectorImageRender {
     constructor(node, position) {
-        super({position, height: iconHeight, width: iconWidth, offset: [-iconWidth/2, -iconHeight]});
+        super({
+            position,
+            height: iconHeight,
+            width: iconWidth,
+            offset: [-iconWidth / 2, -iconHeight],
+        });
         this.opacity = 0;
 
         this._node = node;
     }
 
     _createNode() {}
-    get isReady() { return true; }
+    get isReady() {
+        return true;
+    }
 }
 
 export class RamblerSymbol extends Symbol {
@@ -30,14 +37,14 @@ export class RamblerSymbol extends Symbol {
             source: imageSrc,
             width: iconWidth,
             height: iconHeight,
-            anchorPoint: [iconWidth / 2, iconHeight]
+            anchorPoint: [iconWidth / 2, iconHeight],
         });
     }
 
     renderFunction(feature, resolution, crs) {
         if (resolution >= staticResolution) {
             let position = feature.projectTo(crs).position;
-            let pxPosition = [position[0] / resolution, - position[1] / resolution];
+            let pxPosition = [position[0] / resolution, -position[1] / resolution];
             return [new StaticPin(this._staticImage, pxPosition)];
         } else {
             return this._dynamicSymbol.renderFunction(feature, resolution, crs);
