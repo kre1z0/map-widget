@@ -5,11 +5,14 @@ import postcss from 'rollup-plugin-postcss';
 import url from 'rollup-plugin-url';
 import pcssUrl from 'postcss-url';
 import browsersync from 'rollup-plugin-browsersync';
+import minify from 'rollup-plugin-minify-es';
 import path from 'path';
 
 function resolvePath(dir) {
     return path.join(__dirname, dir);
 }
+
+const isDev = process.env.NODE_ENV === "development";
 
 export default {
     input: resolvePath('./src/app.js'),
@@ -44,6 +47,5 @@ export default {
         babel({
             exclude: 'node_modules/**',
         }),
-        browsersync({ server: resolvePath('./') }),
-    ],
+    ].concat(isDev ? [browsersync({ server: resolvePath('./') })] : [minify()]),
 };
