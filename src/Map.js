@@ -90,9 +90,9 @@ class Map {
             if (prevPopup) {
                 const popupContent = document.querySelector(`.${styles.popupContent}`);
 
-                popupContent.classList.add(styles.fadeOut);
+                popupContent.classList.add(styles.fadeIn);
             } else {
-                wrapper.classList.add(styles.fadeOut);
+                wrapper.classList.add(styles.fadeIn);
             }
             this.setSelection(feature);
         }
