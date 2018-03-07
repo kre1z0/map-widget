@@ -12,7 +12,7 @@ function resolvePath(dir) {
     return path.join(__dirname, dir);
 }
 
-const isDev = process.env.NODE_ENV === "development";
+const isDev = process.env.NODE_ENV === 'development';
 
 export default {
     input: resolvePath('./src/app.js'),
@@ -45,7 +45,7 @@ export default {
             ],
         }),
         babel({
-            exclude: 'node_modules/**',
+            include: 'node_modules/**',
         }),
     ].concat(isDev ? [browsersync({ server: resolvePath('./') })] : [minify()]),
 };

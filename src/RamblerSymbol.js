@@ -5,7 +5,7 @@ import { DynamicImageSymbol } from 'sGis/dist/symbols/point/DynamicImageSymbol';
 const staticResolution = 611.4962262812505;
 
 const iconWidth = 40;
-const iconHeight = 55;
+const iconHeight = 51;
 
 export class StaticPin extends StaticVectorImageRender {
     constructor(node, position) {

@@ -71,7 +71,7 @@ class Map {
         this._layer.redraw();
     }
 
-    onFeatureClick(props) {
+    onFeatureClick(props, feature) {
         const { id } = this.selectedObject;
         const map = document.getElementById(this.mapWrapperId);
 
@@ -94,6 +94,7 @@ class Map {
             } else {
                 wrapper.classList.add(styles.fadeIn);
             }
+            this.setSelection(feature);
         }
 
         this.selectedObject = {
@@ -152,7 +153,7 @@ class Map {
                     crs: wgs84,
                 });
 
-                feature.on('click', () => this.onFeatureClick(props));
+                feature.on('click', () => this.onFeatureClick(props, feature));
 
                 featureLayer.add(feature);
             });
