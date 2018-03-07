@@ -1,5 +1,4 @@
 import '@babel/polyfill';
-import 'es6-promise';
 import mustache from 'mustache';
 import Map from './map';
 import { mapContainer } from './templates/map-template';

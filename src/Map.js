@@ -33,10 +33,13 @@ class Map {
     }
 
     onMapClick(e) {
-        const closeBtnClicked = e.target.className.includes(styles.closeBtn);
-        if (closeBtnClicked) {
-            const popup = document.querySelector(`.${styles.popup}`);
-            popup.remove();
+        const targetClassName = e.target.className;
+        if (typeof targetClassName === 'string' || targetClassName instanceof String) {
+            const closeBtnClicked = targetClassName.includes(styles.closeBtn);
+            if (closeBtnClicked) {
+                const popup = document.querySelector(`.${styles.popup}`);
+                popup.remove();
+            }
         }
     }
 
