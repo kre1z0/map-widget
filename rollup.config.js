@@ -48,5 +48,5 @@ export default {
             include: 'node_modules/**',
             // exclude: 'node_modules/**',
         }),
-    ].concat(isDev ? [browsersync({ server: resolvePath('./') })] : []),
+    ].concat(isDev ? [browsersync({ server: resolvePath('./') })] : [minify()]),
 };
