@@ -51,7 +51,6 @@ class Map {
                 setTimeout(() => {
                     popup.remove();
                 }, 200);
-                this.clearSelection();
             }
         }
     }
@@ -76,6 +75,7 @@ class Map {
         const map = document.getElementById(this.mapWrapperId);
 
         if (map && id !== props.id) {
+            this.clearSelection();
             const prevPopup = document.querySelector(`.${styles.popup}`);
             if (prevPopup) prevPopup.remove();
 
@@ -90,9 +90,9 @@ class Map {
             if (prevPopup) {
                 const popupContent = document.querySelector(`.${styles.popupContent}`);
 
-                popupContent.classList.add(styles.fadeIn);
+                popupContent.classList.add(styles.fadeOut);
             } else {
-                wrapper.classList.add(styles.fadeIn);
+                wrapper.classList.add(styles.fadeOut);
             }
             this.setSelection(feature);
         }

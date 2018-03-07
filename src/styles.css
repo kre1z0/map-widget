@@ -49,17 +49,20 @@ body, html {
 }
 
 .fadeIn {
-    animation: fadeIn 200ms ease-in;
+    animation: fadeIn 400ms ease-in;
 }
 
 .fadeOut {
-    animation: fadeOut 200ms ease-in-out;
+    animation: fadeOut 400ms ease-in-out;
 }
 
 
 @keyframes fadeIn {
     0% {
         opacity: 0
+    }
+    50% {
+        opacity: 0;
     }
     100% {
         opacity: 1;
@@ -69,6 +72,9 @@ body, html {
 @keyframes fadeOut {
     0% {
         opacity: 1
+    }
+    50% {
+        opacity: 0;
     }
     100% {
         opacity: 0;
