@@ -1,17 +1,16 @@
 import fetchJsonp from 'fetch-jsonp';
 import mustache from 'mustache';
 import { init } from 'sGis/dist/init.js';
-import { TileLayer } from 'sGis/dist/layers/TileLayer.js';
-import { FeatureLayer } from 'sGis/dist/layers/FeatureLayer.js';
-import { PointFeature } from 'sGis/dist/features/PointFeature.js';
+import { TileLayer } from 'sGis/dist/layers/TileLayer';
+import { FeatureLayer } from 'sGis/dist/layers/FeatureLayer';
+import { PointFeature } from 'sGis/dist/features/PointFeature';
 import { Point } from 'sGis/dist/Point.js';
 import { wgs84 } from 'sGis/dist/Crs.js';
-import { DynamicImageSymbol } from 'sGis/dist/symbols/point/DynamicImageSymbol.js';
+import { PointSymbol } from 'sGis/dist/symbols/point/Point';
 
-import yarmarkaIcon from './icons/Yarmarka.svg';
-import yarmarkaIconSelected from './icons/Yarmarka_selected.svg';
 import { popupTemplate } from './templates/popup-template';
 import { zoomPanelTemplate } from './templates/zoom-plugin-template';
+import { errorTemplate } from './templates/error-template';
 import styles from './styles.css';
 
 const apiUrl = 'https://msp.everpoint.ru/';
@@ -29,7 +28,15 @@ class Map {
         })
             .then(res => res.json())
             .then(json => json)
-            .catch(ex => console.log('Error', ex));
+            .catch(ex => {
+                const wrapper = document.createElement('div');
+                const map = document.getElementById(this.mapWrapperId);
+                const error = mustache.render(errorTemplate, { errorText: ex });
+                wrapper.innerHTML = error;
+                if (map) {
+                    map.appendChild(wrapper);
+                }
+            });
     }
 
     onMapClick(e) {
@@ -38,7 +45,10 @@ class Map {
             const closeBtnClicked = targetClassName.includes(styles.closeBtn);
             if (closeBtnClicked) {
                 const popup = document.querySelector(`.${styles.popup}`);
-                popup.remove();
+                popup.classList.add(styles.fadeOut);
+                setTimeout(() => {
+                    popup.remove();
+                }, 200);
             }
         }
     }
@@ -46,21 +56,36 @@ class Map {
     onFeatureClick(props, feature) {
         const { id, symbolNode } = this.selectedObject;
         const map = document.getElementById(this.mapWrapperId);
-        const symbol = feature.symbol.getNode(feature);
+        //const symbol = feature.symbol.getNode(feature);
 
         if (map && id !== props.id) {
             const prevPopup = document.querySelector(`.${styles.popup}`);
             if (prevPopup) prevPopup.remove();
-            if (symbolNode) symbolNode.src = yarmarkaIcon;
 
-            symbol.src = yarmarkaIconSelected;
+            //if (symbolNode) symbolNode.src = yarmarkaIcon;
+
+            //symbol.src = yarmarkaIconSelected;
             const popup = mustache.render(popupTemplate, props);
             const wrapper = document.createElement('div');
+
             wrapper.innerHTML = popup;
             wrapper.classList.add(styles.popup);
+
             map.appendChild(wrapper);
+
+            if (prevPopup) {
+                const popupContent = document.querySelector(`.${styles.popupContent}`);
+
+                popupContent.classList.add(styles.fadeIn);
+            } else {
+                wrapper.classList.add(styles.fadeIn);
+            }
         }
-        this.selectedObject = { id: props.id, symbolNode: symbol };
+
+        this.selectedObject = {
+            id: props.id,
+            //symbolNode: symbol,
+        };
     }
 
     onZoom(value) {
@@ -97,10 +122,12 @@ class Map {
 
             let featureLayer = new FeatureLayer();
 
-            const iconWidth = 40;
-            const iconHeight = 55;
-            const symbol = new DynamicImageSymbol({
-                source: yarmarkaIcon,
+            const iconWidth = 16;
+            const iconHeight = 16;
+            const symbol = new PointSymbol({
+                strokeColor: '#fff',
+                strokeWidth: 2,
+                fillColor: '#668A2C',
                 width: iconWidth,
                 height: iconHeight,
                 anchorPoint: [iconWidth / 2, iconHeight / 2],

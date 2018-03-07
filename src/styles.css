@@ -32,6 +32,7 @@ body, html {
 }
 
 .popup {
+    border-radius: 2px;
     min-height: 316px;
     max-height: calc(100% - 64px);
     position: absolute;
@@ -40,7 +41,11 @@ body, html {
     width: 400px;
     overflow: auto;
     background-color: #fff;
-    animation: fadeIn 200ms ease-in;
+    box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.11);
+}
+
+.popupContent {
+
 }
 
 .fadeIn {
@@ -220,4 +225,15 @@ body, html {
 
 .zoomOut {
    cursor: pointer;
+}
+
+.error {
+    padding: 20px;
+    z-index: 9999;
+    font-size: 24px;
+    color: #fd431f;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    position: absolute;
 }
