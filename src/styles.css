@@ -162,3 +162,52 @@ body, html {
 .popup::-webkit-scrollbar-thumb:active {
     background: #cdcdcd;
 }
+
+.zoomPanel {
+    width: 36px;
+    text-align: center;
+    top: 15px;
+    right: 15px;
+    position: absolute;
+}
+
+.zoomIn {
+    display: inline-block;
+    color: #737066;
+    font-size: 24px;
+    line-height: 24px;
+    text-align: center;
+    cursor: pointer;
+    border: 3px solid #98958B;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: #fff;
+}
+
+.zoomOut {
+    cursor: pointer;
+    position: relative;
+    display: inline-block;
+    color: #737066;
+    line-height: 20px;
+    text-align: center;
+    border-radius: 50%;
+    border: 3px solid #98958B;
+    font-size: 24px;
+    width: 30px;
+    height: 30px;
+    background-color: #fff;
+}
+
+.zoomOut:before {
+    position: absolute;
+    display: block;
+    background-color: #98958B;
+    content: '';
+    width: 12px;
+    height: 4px;
+    top: -6px;
+    left: 6px;
+}
+

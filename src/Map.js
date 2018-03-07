@@ -4,12 +4,14 @@ import { init } from 'sGis/dist/init.js';
 import { TileLayer } from 'sGis/dist/layers/TileLayer.js';
 import { FeatureLayer } from 'sGis/dist/layers/FeatureLayer.js';
 import { PointFeature } from 'sGis/dist/features/PointFeature.js';
-import { BalloonControl } from 'sGis/dist/controls/BalloonControl.js';
 import { Point } from 'sGis/dist/Point.js';
-import { Crs, wgs84 } from 'sGis/dist/Crs.js';
+import { wgs84 } from 'sGis/dist/Crs.js';
+import { DynamicImageSymbol } from 'sGis/dist/symbols/point/DynamicImageSymbol.js';
 
-import RamblerSvgSymbol from './RamblerSvgSymbol';
-import { popupTemplate } from './popup-template';
+import yarmarkaIcon from './icons/Yarmarka.svg';
+import yarmarkaIconSelected from './icons/Yarmarka_selected.svg';
+import { popupTemplate } from './templates/popup-template';
+import { zoomPanelTemplate } from './templates/zoom-plugin-template';
 import styles from './styles.css';
 
 const apiUrl = 'https://msp.everpoint.ru/';
@@ -18,7 +20,7 @@ class Map {
     constructor() {
         this.init();
         this.mapWrapperId = styles.mapContainer;
-        this.selectedObjectId = null;
+        this.selectedObject = {};
     }
 
     fetchData() {
@@ -38,68 +40,58 @@ class Map {
         }
     }
 
-    onFeatureClick(props) {
+    onFeatureClick(props, feature) {
+        const { id, symbolNode } = this.selectedObject;
         const map = document.getElementById(this.mapWrapperId);
-        if (map && this.selectedObjectId !== props.id) {
+        const symbol = feature.symbol.getNode(feature);
+
+        if (map && id !== props.id) {
             const prevPopup = document.querySelector(`.${styles.popup}`);
             if (prevPopup) prevPopup.remove();
+            if (symbolNode) symbolNode.src = yarmarkaIcon;
 
+            symbol.src = yarmarkaIconSelected;
             const popup = mustache.render(popupTemplate, props);
             const wrapper = document.createElement('div');
             wrapper.innerHTML = popup;
             wrapper.classList.add(styles.popup);
             map.appendChild(wrapper);
         }
-        this.selectedObjectId = props.id;
-        console.log('--> this.selectedObjectId ', this.selectedObjectId, props);
+        this.selectedObject = { id: props.id, symbolNode: symbol };
+    }
+
+    initZoomPlugin() {
+        const map = document.getElementById(this.mapWrapperId);
+        const wrapper = document.createElement('div');
+        const zoomPanel = mustache.render(zoomPanelTemplate);
+        if (map) {
+            wrapper.classList.add(styles.zoomPanel);
+            wrapper.innerHTML = zoomPanel;
+            map.appendChild(wrapper);
+        }
     }
 
     init() {
         this.fetchData().then(data => {
-            console.log('--> features', data.features.features);
-            //const sym = new RamblerSvgSymbol([0, 0]);
-            //console.log('--> RamblerSvgSymbol', sym);
-            let points = [
-                {
-                    position: [55.7514, 37.6409],
-                    text: 'Moscow',
-                    link:
-                        'https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/MSK_Collage_2015.png/343px-MSK_Collage_2015.png',
-                },
-                {
-                    position: [59.9226, 30.3324],
-                    text: 'Saint Petersburg',
-                    link:
-                        'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/St._Petersburg_Montage_2016.png/343px-St._Petersburg_Montage_2016.png',
-                },
-            ];
-
-            let { map, painter } = init({
+            let { map } = init({
                 wrapper: styles.mapContainer,
-                layers: [new TileLayer('http://b.tile.openstreetmap.org/{z}/{x}/{y}.png')],
+                layers: [new TileLayer('http://tile1.maps.2gis.com/tiles?x={x}&y={y}&z={z}&v=40')],
                 centerPoint: new Point([57.84, 40.56]),
                 resolution: 2445.984905125002,
             });
 
             document.addEventListener('click', this.onMapClick);
 
-            let control = new BalloonControl(map, { painter });
             let featureLayer = new FeatureLayer();
 
-            //const symbol = new Symbol(
-            //    new sGis.symbol.point.Point({
-            //        fillColor: 'white',
-            //        size: 32,
-            //        strokeColor: 'rgba(0,255,255,0.5)',
-            //        strokeWidth: 5,
-            //    }),
-            //    new sGis.symbol.label.Label({
-            //        css: 'sGis-symbol-label-center-middle customLabelClass',
-            //    }),
-            //);
-
-            const sym = RamblerSvgSymbol([0, 0]);
-            console.log('--> sym', sym);
+            const w = 40;
+            const h = 55;
+            const symbol = new DynamicImageSymbol({
+                source: yarmarkaIcon,
+                height: h,
+                width: w,
+                anchorPoint: [w / 2, h / 2],
+            });
 
             data.features.features.forEach(({ geometry, id, properties }) => {
                 const props = {
@@ -109,19 +101,20 @@ class Map {
                     address: properties.address,
                     periodicity: properties.fields[0].value,
                 };
-                //const popup = mustache.render(popupTemplate, props);
 
                 let feature = new PointFeature(geometry.coordinates, {
-                    //symbol: crossSymbol,
+                    symbol,
                     crs: wgs84,
                 });
-                feature.on('click', () => this.onFeatureClick(props));
 
-                //control.attach(feature, `<div class="${styles.popup}">${popup}</div>`);
+                feature.on('click', () => this.onFeatureClick(props, feature));
+
                 featureLayer.add(feature);
             });
 
             map.addLayer(featureLayer);
+
+            this.initZoomPlugin();
         });
     }
 }

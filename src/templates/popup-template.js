@@ -1,4 +1,4 @@
-import styles from './styles.css';
+import styles from '../styles.css';
 
 export const popupTemplate = `
     <div class=${styles.header}>
