@@ -6,13 +6,13 @@ import { FeatureLayer } from 'sGis/dist/layers/FeatureLayer.js';
 import { PointFeature } from 'sGis/dist/features/PointFeature.js';
 import { Point } from 'sGis/dist/Point.js';
 import { wgs84 } from 'sGis/dist/Crs.js';
-import { DynamicImageSymbol } from 'sGis/dist/symbols/point/DynamicImageSymbol.js';
 
 import yarmarkaIcon from './icons/Yarmarka.svg';
 import yarmarkaIconSelected from './icons/Yarmarka_selected.svg';
 import { popupTemplate } from './templates/popup-template';
 import { zoomPanelTemplate } from './templates/zoom-plugin-template';
 import styles from './styles.css';
+import {RamblerSymbol} from "./RamblerSymbol";
 
 const apiUrl = 'https://msp.everpoint.ru/';
 
@@ -39,28 +39,43 @@ class Map {
             if (closeBtnClicked) {
                 const popup = document.querySelector(`.${styles.popup}`);
                 popup.remove();
+                this.clearSelection();
             }
         }
     }
 
     onFeatureClick(props, feature) {
-        const { id, symbolNode } = this.selectedObject;
+        const { id } = this.selectedObject;
         const map = document.getElementById(this.mapWrapperId);
-        const symbol = feature.symbol.getNode(feature);
 
         if (map && id !== props.id) {
+            this.clearSelection();
             const prevPopup = document.querySelector(`.${styles.popup}`);
             if (prevPopup) prevPopup.remove();
-            if (symbolNode) symbolNode.src = yarmarkaIcon;
 
-            symbol.src = yarmarkaIconSelected;
             const popup = mustache.render(popupTemplate, props);
             const wrapper = document.createElement('div');
             wrapper.innerHTML = popup;
             wrapper.classList.add(styles.popup);
             map.appendChild(wrapper);
+            this.setSelection(feature);
         }
-        this.selectedObject = { id: props.id, symbolNode: symbol };
+        this.selectedObject = { id: props.id };
+    }
+
+    clearSelection() {
+        if (this.selectedFeature) {
+            this.selectedFeature.clearTempSymbol();
+            this.selectedFeature.__dynamicSymbolRender = null;
+            this._layer.redraw();
+        }
+    }
+
+    setSelection(feature) {
+        this.selectedFeature = feature;
+        this.selectedFeature.__dynamicSymbolRender = null;
+        feature.setTempSymbol(this._selectedSymbol);
+        this._layer.redraw();
     }
 
     onZoom(value) {
@@ -93,18 +108,12 @@ class Map {
 
             this.map = map;
 
-            document.addEventListener('click', this.onMapClick);
+            document.addEventListener('click', this.onMapClick.bind(this));
 
             let featureLayer = new FeatureLayer();
 
-            const iconWidth = 40;
-            const iconHeight = 55;
-            const symbol = new DynamicImageSymbol({
-                source: yarmarkaIcon,
-                width: iconWidth,
-                height: iconHeight,
-                anchorPoint: [iconWidth / 2, iconHeight / 2],
-            });
+            let symbol = new RamblerSymbol(yarmarkaIcon);
+            this._selectedSymbol = new RamblerSymbol(yarmarkaIconSelected);
 
             data.features.features.forEach(({ geometry, id, properties }) => {
                 const props = {
@@ -126,7 +135,7 @@ class Map {
             });
 
             map.addLayer(featureLayer);
-
+            this._layer = featureLayer;
             this.initZoomPlugin();
         });
     }

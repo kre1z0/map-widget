@@ -45,7 +45,8 @@ export default {
             ],
         }),
         babel({
-            exclude: 'node_modules/**',
+            include: 'node_modules/**',
+            // exclude: 'node_modules/**',
         }),
-    ].concat(isDev ? [browsersync({ server: resolvePath('./') })] : [minify()]),
+    ].concat(isDev ? [browsersync({ server: resolvePath('./') })] : []),
 };
