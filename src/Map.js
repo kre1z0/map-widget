@@ -1,16 +1,18 @@
 import fetchJsonp from 'fetch-jsonp';
 import mustache from 'mustache';
-import { init } from 'sGis/dist/init.js';
+import { init } from 'sGis/dist/init';
 import { TileLayer } from 'sGis/dist/layers/TileLayer';
 import { FeatureLayer } from 'sGis/dist/layers/FeatureLayer';
 import { PointFeature } from 'sGis/dist/features/PointFeature';
-import { Point } from 'sGis/dist/Point.js';
-import { wgs84 } from 'sGis/dist/Crs.js';
-import { PointSymbol } from 'sGis/dist/symbols/point/Point';
+import { Point } from 'sGis/dist/Point';
+import { wgs84 } from 'sGis/dist/Crs';
 
+import yarmarkaIcon from './icons/Yarmarka.svg';
+import yarmarkaIconSelected from './icons/Yarmarka_selected.svg';
 import { popupTemplate } from './templates/popup-template';
 import { zoomPanelTemplate } from './templates/zoom-plugin-template';
 import { errorTemplate } from './templates/error-template';
+import { RamblerSymbol } from './RamblerSymbol';
 import styles from './styles.css';
 
 const apiUrl = 'https://msp.everpoint.ru/';
@@ -32,7 +34,7 @@ class Map {
                 const wrapper = document.createElement('div');
                 const map = document.getElementById(this.mapWrapperId);
                 const error = mustache.render(errorTemplate, { errorText: ex });
-                wrapper.innerHTML = error;
+                wrapper.innerHTML = `${error}`;
                 if (map) {
                     map.appendChild(wrapper);
                 }
@@ -49,22 +51,34 @@ class Map {
                 setTimeout(() => {
                     popup.remove();
                 }, 200);
+                this.clearSelection();
             }
         }
     }
 
-    onFeatureClick(props, feature) {
-        const { id, symbolNode } = this.selectedObject;
+    clearSelection() {
+        if (this.selectedFeature) {
+            this.selectedFeature.clearTempSymbol();
+            this.selectedFeature.__dynamicSymbolRender = null;
+            this._layer.redraw();
+        }
+    }
+
+    setSelection(feature) {
+        this.selectedFeature = feature;
+        this.selectedFeature.__dynamicSymbolRender = null;
+        feature.setTempSymbol(this._selectedSymbol);
+        this._layer.redraw();
+    }
+
+    onFeatureClick(props) {
+        const { id } = this.selectedObject;
         const map = document.getElementById(this.mapWrapperId);
-        //const symbol = feature.symbol.getNode(feature);
 
         if (map && id !== props.id) {
             const prevPopup = document.querySelector(`.${styles.popup}`);
             if (prevPopup) prevPopup.remove();
 
-            //if (symbolNode) symbolNode.src = yarmarkaIcon;
-
-            //symbol.src = yarmarkaIconSelected;
             const popup = mustache.render(popupTemplate, props);
             const wrapper = document.createElement('div');
 
@@ -84,7 +98,6 @@ class Map {
 
         this.selectedObject = {
             id: props.id,
-            //symbolNode: symbol,
         };
     }
 
@@ -118,20 +131,12 @@ class Map {
 
             this.map = map;
 
-            document.addEventListener('click', this.onMapClick);
+            document.addEventListener('click', this.onMapClick.bind(this));
 
             let featureLayer = new FeatureLayer();
 
-            const iconWidth = 16;
-            const iconHeight = 16;
-            const symbol = new PointSymbol({
-                strokeColor: '#fff',
-                strokeWidth: 2,
-                fillColor: '#668A2C',
-                width: iconWidth,
-                height: iconHeight,
-                anchorPoint: [iconWidth / 2, iconHeight / 2],
-            });
+            let symbol = new RamblerSymbol(yarmarkaIcon);
+            this._selectedSymbol = new RamblerSymbol(yarmarkaIconSelected);
 
             data.features.features.forEach(({ geometry, id, properties }) => {
                 const props = {
@@ -147,13 +152,14 @@ class Map {
                     crs: wgs84,
                 });
 
-                feature.on('click', () => this.onFeatureClick(props, feature));
+                feature.on('click', () => this.onFeatureClick(props));
 
                 featureLayer.add(feature);
             });
 
             map.addLayer(featureLayer);
 
+            this._layer = featureLayer;
             this.initZoomPlugin();
         });
     }
