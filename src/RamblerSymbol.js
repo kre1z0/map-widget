@@ -1,6 +1,6 @@
-import { StaticVectorImageRender } from 'sGis/dist/renders/StaticVectorImageRender';
-import { Symbol } from 'sGis/dist/symbols/Symbol';
-import { DynamicImageSymbol } from 'sGis/dist/symbols/point/DynamicImageSymbol';
+import { StaticVectorImageRender } from 'sgis/dist/renders/StaticVectorImageRender';
+import { Symbol } from 'sgis/dist/symbols/Symbol';
+import { DynamicImageSymbol } from 'sgis/dist/symbols/point/DynamicImageSymbol';
 
 const staticResolution = 611.4962262812505;
 

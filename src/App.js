@@ -1,6 +1,6 @@
 import '@babel/polyfill';
 import mustache from 'mustache';
-import Map from './map';
+import Map from './Map';
 import { mapContainer } from './templates/map-template';
 
 (function() {

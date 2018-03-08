@@ -15,7 +15,7 @@ function resolvePath(dir) {
 const isDev = process.env.NODE_ENV === 'development';
 
 export default {
-    input: resolvePath('./src/app.js'),
+    input: resolvePath('./src/App.js'),
     output: [
         {
             file: resolvePath('./dist/rambler-map.js'),

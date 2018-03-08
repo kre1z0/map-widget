@@ -1,11 +1,11 @@
 import fetchJsonp from 'fetch-jsonp';
 import mustache from 'mustache';
-import { init } from 'sGis/dist/init';
-import { TileLayer } from 'sGis/dist/layers/TileLayer';
-import { FeatureLayer } from 'sGis/dist/layers/FeatureLayer';
-import { PointFeature } from 'sGis/dist/features/PointFeature';
-import { Point } from 'sGis/dist/Point';
-import { wgs84 } from 'sGis/dist/Crs';
+import { init } from 'sgis/dist/init';
+import { TileLayer } from 'sgis/dist/layers/TileLayer';
+import { FeatureLayer } from 'sgis/dist/layers/FeatureLayer';
+import { PointFeature } from 'sgis/dist/features/PointFeature';
+import { Point } from 'sgis/dist/Point';
+import { wgs84 } from 'sgis/dist/Crs';
 
 import yarmarkaIcon from './icons/Yarmarka.svg';
 import yarmarkaIconSelected from './icons/Yarmarka_selected.svg';
