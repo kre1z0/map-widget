@@ -127,8 +127,8 @@ class Map {
             let { map } = init({
                 wrapper: styles.mapContainer,
                 layers: [new TileLayer('http://tile1.maps.2gis.com/tiles?x={x}&y={y}&z={z}&v=40')],
-                centerPoint: new Point([57.84, 40.56]),
-                resolution: 3100,
+                centerPoint: new Point([57.84, 70.56]),
+                resolution: 20000,
             });
 
             this.map = map;
