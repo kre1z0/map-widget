@@ -28,6 +28,7 @@ export default {
         include: 'src/**',
         clearScreen: true,
     },
+    sourceMap: true,
     plugins: [
         resolve(),
         commonjs(),
