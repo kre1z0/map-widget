@@ -7,13 +7,13 @@ import { PointFeature } from 'sgis/dist/features/PointFeature';
 import { Point } from 'sgis/dist/Point';
 import { wgs84 } from 'sgis/dist/Crs';
 
-import yarmarkaIcon from './icons/Yarmarka.svg';
-import yarmarkaIconSelected from './icons/Yarmarka_selected.svg';
-import { popupTemplate } from './templates/popup-template';
-import { zoomPanelTemplate } from './templates/zoom-plugin-template';
-import { errorTemplate } from './templates/error-template';
-import { RamblerSymbol } from './RamblerSymbol';
-import styles from './styles.css';
+import yarmarkaIcon from '../icons/Yarmarka.svg';
+import yarmarkaIconSelected from '../icons/Yarmarka_selected.svg';
+import { popupTemplate } from '../templates/popup-template';
+import { zoomPanelTemplate } from '../templates/zoom-plugin-template';
+import { errorTemplate } from '../templates/error-template';
+import { RamblerSymbol } from '../components/RamblerSymbol';
+import styles from '../styles.css';
 
 const apiUrl = 'https://msp.everpoint.ru/';
 
@@ -128,7 +128,7 @@ class Map {
                 wrapper: styles.mapContainer,
                 layers: [new TileLayer('http://tile1.maps.2gis.com/tiles?x={x}&y={y}&z={z}&v=40')],
                 centerPoint: new Point([57.84, 40.56]),
-                resolution: 2445.984905125002,
+                resolution: 3100,
             });
 
             this.map = map;
