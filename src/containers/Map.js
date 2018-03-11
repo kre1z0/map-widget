@@ -9,11 +9,11 @@ import { wgs84 } from 'sgis/dist/Crs';
 
 import yarmarkaIcon from '../icons/Yarmarka.svg';
 import yarmarkaIconSelected from '../icons/Yarmarka_selected.svg';
-import { popupTemplate } from '../templates/popup-template';
 import { zoomPanelTemplate } from '../templates/zoom-plugin-template';
 import { errorTemplate } from '../templates/error-template';
 import { licenseTepmlate } from '../templates/license-template';
 import { RamblerSymbol } from '../components/RamblerSymbol';
+import Popup from '../components/Popup';
 import styles from '../styles.css';
 
 const apiUrl = 'https://msp.everpoint.ru/';
@@ -22,7 +22,6 @@ class Map {
     constructor() {
         this.init();
         this.mapWrapperId = styles.mapContainer;
-        this.selectedObject = {};
         this.mapNode = document.getElementById(this.mapWrapperId);
     }
 
@@ -43,21 +42,6 @@ class Map {
             });
     }
 
-    onMapClick(e) {
-        const targetClassName = e.target.className;
-        if (typeof targetClassName === 'string' || targetClassName instanceof String) {
-            const closeBtnClicked = targetClassName.includes(styles.closeBtn);
-            if (closeBtnClicked) {
-                this.clearSelection();
-                const popup = document.querySelector(`.${styles.popup}`);
-                popup.classList.add(styles.fadeOut);
-                setTimeout(() => {
-                    popup.remove();
-                }, 200);
-            }
-        }
-    }
-
     clearSelection() {
         if (this.selectedFeature) {
             this.selectedFeature.clearTempSymbol();
@@ -74,34 +58,23 @@ class Map {
     }
 
     onFeatureClick(props, feature) {
-        const { id } = this.selectedObject;
-
-        if (this.mapNode && id !== props.id) {
+        if (this.mapNode) {
             this.clearSelection();
+
             const prevPopup = document.querySelector(`.${styles.popup}`);
-            if (prevPopup) prevPopup.remove();
-
-            const popup = mustache.render(popupTemplate, props);
-            const wrapper = document.createElement('div');
-
-            wrapper.innerHTML = popup;
-            wrapper.classList.add(styles.popup);
-
-            this.mapNode.appendChild(wrapper);
+            if (prevPopup) this.popup.closePopup();
 
             if (prevPopup) {
-                const popupContent = document.querySelector(`.${styles.popupContent}`);
-
-                popupContent.classList.add(styles.fadeIn);
+                this.popup = new Popup(this.mapNode, props, true, () =>
+                    this.clearSelection(),
+                ).renderPopup();
             } else {
-                wrapper.classList.add(styles.fadeIn);
+                this.popup = new Popup(this.mapNode, props, false, () =>
+                    this.clearSelection(),
+                ).renderPopup();
             }
             this.setSelection(feature);
         }
-
-        this.selectedObject = {
-            id: props.id,
-        };
     }
 
     onZoom(value) {
@@ -135,8 +108,6 @@ class Map {
             const licenseWrapper = document.createElement('div');
             licenseWrapper.innerHTML = mustache.render(licenseTepmlate);
             this.mapNode.appendChild(licenseWrapper);
-
-            document.addEventListener('click', this.onMapClick.bind(this));
 
             let featureLayer = new FeatureLayer();
 

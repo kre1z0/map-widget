@@ -1,4 +1,5 @@
 import resolve from 'rollup-plugin-node-resolve';
+import babelrc from 'babelrc-rollup';
 import commonjs from 'rollup-plugin-commonjs';
 import babel from 'rollup-plugin-babel';
 import postcss from 'rollup-plugin-postcss';
@@ -13,6 +14,22 @@ function resolvePath(dir) {
 }
 
 const isDev = process.env.NODE_ENV === 'development';
+
+const babelConfig = {
+    presets: [
+        [
+            '@babel/preset-env',
+            {
+                targets: {
+                    browsers: ['last 2 versions'],
+                },
+                modules: false,
+                useBuiltIns: 'entry',
+            },
+        ],
+        '@babel/preset-stage-2',
+    ],
+};
 
 export default {
     input: resolvePath('./src/App.js'),
@@ -45,9 +62,12 @@ export default {
                 }),
             ],
         }),
-        babel({
-            include: 'node_modules/**',
-        }),
-    ],
-    //.concat(isDev ? [browsersync({ server: resolvePath('./') })] : [minify()]),
+        babel(
+            babelrc({
+                addExternalHelpersPlugin: false,
+                config: babelConfig,
+                include: 'node_modules/**',
+            }),
+        ),
+    ].concat(isDev ? [browsersync({ server: resolvePath('./') })] : [minify()]),
 };
