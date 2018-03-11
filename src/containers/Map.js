@@ -58,6 +58,8 @@ class Map {
     }
 
     onFeatureClick(props, feature) {
+        if (this.selectedFeature === feature) return;
+
         if (this.mapNode) {
             this.clearSelection();
 
