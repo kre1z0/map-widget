@@ -12,6 +12,7 @@ import yarmarkaIconSelected from '../icons/Yarmarka_selected.svg';
 import { popupTemplate } from '../templates/popup-template';
 import { zoomPanelTemplate } from '../templates/zoom-plugin-template';
 import { errorTemplate } from '../templates/error-template';
+import { licenseTepmlate } from '../templates/license-template';
 import { RamblerSymbol } from '../components/RamblerSymbol';
 import styles from '../styles.css';
 
@@ -22,6 +23,7 @@ class Map {
         this.init();
         this.mapWrapperId = styles.mapContainer;
         this.selectedObject = {};
+        this.mapNode = document.getElementById(this.mapWrapperId);
     }
 
     fetchData() {
@@ -73,9 +75,8 @@ class Map {
 
     onFeatureClick(props, feature) {
         const { id } = this.selectedObject;
-        const map = document.getElementById(this.mapWrapperId);
 
-        if (map && id !== props.id) {
+        if (this.mapNode && id !== props.id) {
             this.clearSelection();
             const prevPopup = document.querySelector(`.${styles.popup}`);
             if (prevPopup) prevPopup.remove();
@@ -86,7 +87,7 @@ class Map {
             wrapper.innerHTML = popup;
             wrapper.classList.add(styles.popup);
 
-            map.appendChild(wrapper);
+            this.mapNode.appendChild(wrapper);
 
             if (prevPopup) {
                 const popupContent = document.querySelector(`.${styles.popupContent}`);
@@ -108,13 +109,12 @@ class Map {
     }
 
     initZoomPlugin() {
-        const map = document.getElementById(this.mapWrapperId);
         const wrapper = document.createElement('div');
         const zoomPanel = mustache.render(zoomPanelTemplate);
-        if (map) {
+        if (this.mapNode) {
             wrapper.classList.add(styles.zoomPanel);
             wrapper.innerHTML = zoomPanel;
-            map.appendChild(wrapper);
+            this.mapNode.appendChild(wrapper);
             const zoomIn = document.querySelector(`.${styles.zoomIn}`);
             const zoomOut = document.querySelector(`.${styles.zoomOut}`);
             zoomIn.addEventListener('click', () => this.onZoom(1));
@@ -127,11 +127,14 @@ class Map {
             let { map } = init({
                 wrapper: styles.mapContainer,
                 layers: [new TileLayer('http://tile1.maps.2gis.com/tiles?x={x}&y={y}&z={z}&v=40')],
-                centerPoint: new Point([57.84, 70.56]),
-                resolution: 20000,
+                centerPoint: new Point([60, 92]),
+                resolution: 9600,
             });
+            map.maxResolution = 9601;
 
-            this.map = map;
+            const licenseWrapper = document.createElement('div');
+            licenseWrapper.innerHTML = mustache.render(licenseTepmlate);
+            this.mapNode.appendChild(licenseWrapper);
 
             document.addEventListener('click', this.onMapClick.bind(this));
 
@@ -161,6 +164,7 @@ class Map {
 
             map.addLayer(featureLayer);
 
+            this.map = map;
             this._layer = featureLayer;
             this.initZoomPlugin();
         });

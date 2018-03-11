@@ -232,3 +232,11 @@
     transform: translate(-50%, -50%);
     position: absolute;
 }
+
+.license {
+    text-align: right;
+    color: #767676;
+    position: absolute;
+    right: 25px;
+    bottom: 25px;
+}
