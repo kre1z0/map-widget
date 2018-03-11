@@ -48,5 +48,6 @@ export default {
         babel({
             include: 'node_modules/**',
         }),
-    ].concat(isDev ? [browsersync({ server: resolvePath('./') })] : [minify()]),
+    ],
+    //.concat(isDev ? [browsersync({ server: resolvePath('./') })] : [minify()]),
 };
