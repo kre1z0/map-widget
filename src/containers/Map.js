@@ -62,9 +62,9 @@ class Map {
             this.clearSelection();
 
             const prevPopup = document.querySelector(`.${styles.popup}`);
-            if (prevPopup) this.popup.closePopup();
 
             if (prevPopup) {
+                this.mapNode.removeChild(prevPopup);
                 this.popup = new Popup(this.mapNode, props, true, () =>
                     this.clearSelection(),
                 ).renderPopup();
